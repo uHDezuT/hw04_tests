@@ -160,8 +160,7 @@ class PostPagesTests(TestCase):
             group=self.group,
         )
         self.assertEqual(Post.objects.filter(
-            group=self.group_fake).count(), posts_count
-                         )
+            group=self.group_fake).count(), posts_count)
 
     def test_new_post_in_main_group_list_profile_pages(self):
         """Пост появляется на главной странице,
