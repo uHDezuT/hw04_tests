@@ -14,13 +14,13 @@ class PostFormTests(TestCase):
         )
 
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='test-slug',
-            description='Тестовое описание'
+            title='Новая группа',
+            slug='slug',
+            description='Описание группы'
         )
 
         cls.post = Post.objects.create(
-            text='Тестовый пост',
+            text='Новый пост',
             author=PostFormTests.user,
             group=PostFormTests.group,
         )
@@ -35,7 +35,7 @@ class PostFormTests(TestCase):
         posts_count = Post.objects.count()
         form_data = {
             'group': self.group.id,
-            'text': 'Тестово-тестовый пост',
+            'text': 'Новый текст поста',
         }
         response = self.authorized_client.post(
             reverse('posts:post_create'),
@@ -51,7 +51,7 @@ class PostFormTests(TestCase):
         """Редактирование поста post_id прошло успешно."""
         form_data = {
             'group': self.group.id,
-            'text': 'Другой тестово-тестовый пост'
+            'text': 'Новый текст поста'
         }
         response = self.authorized_client.post(reverse(
             'posts:post_edit', kwargs={'post_id': self.post.id}),

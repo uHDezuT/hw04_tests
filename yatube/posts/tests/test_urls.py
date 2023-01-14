@@ -10,11 +10,10 @@ class StaticURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Создадим группу для проверки доступа к /group/test-slug/
         cls.group = Group.objects.create(
-            title='Тестовое название группы',
-            slug='test_slug',
-            description='Тестовое описание группы',
+            title='Новое название группы',
+            slug='slug',
+            description='Новое описание группы',
         )
         cls.user = User.objects.create_user(
             username='post_author'
@@ -36,10 +35,10 @@ class StaticURLTests(TestCase):
         self.authorized_client.force_login(self.user_2)
 
     def test_guest_client_urls_status_code(self):
-        """Проверяем адреса для НЕ авторизированного пользователя."""
+        """Адреса для НЕ авторизированного пользователя."""
         field_response_urls_code = {
             '/': 200,
-            '/group/test_slug/': 200,
+            '/group/slug/': 200,
             '/group/fake_slug/': 404,
             '/profile/post_author/': 200,
             '/create/': 302,
@@ -53,10 +52,10 @@ class StaticURLTests(TestCase):
                 self.assertEqual(status_code, response_code)
 
     def test_authorized_client_urls_status_code(self):
-        """Проверяем адреса для Авторизированного пользователя."""
+        """Адреса для Авторизированного пользователя."""
         field_response_urls_code = {
             '/': 200,
-            '/group/test_slug/': 200,
+            '/group/slug/': 200,
             '/group/fake_slug/': 404,
             '/profile/post_author/': 200,
             '/create/': 200,

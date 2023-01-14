@@ -13,9 +13,9 @@ class PostPagesTests(TestCase):
             username='post_author',
         )
         cls.group = Group.objects.create(
-            title='Тестовое название группы',
-            slug='test-slug',
-            description='Тестовое описание группы',
+            title='Название группы',
+            slug='slug',
+            description='Описание группы',
         )
         cls.post = Post.objects.create(
             text='Текст',
@@ -34,30 +34,36 @@ class PostPagesTests(TestCase):
 
     def test_views_use_correct_template(self):
         """URL-адреса использует соответствующий шаблон."""
-        templates_pages_names = {
-            reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list',
-                    kwargs={
-                        'slug': self.group.slug}): 'posts/group_list.html',
-            reverse('posts:profile',
-                    kwargs={
-                        'username': self.user.username}): 'posts/profile.html',
-            reverse('posts:post_detail',
-                    kwargs={
-                        'post_id': self.post.id}): 'posts/post_detail.html',
-            reverse('posts:post_edit',
-                    kwargs={
-                        'post_id': self.post.id}): 'posts/create_post.html',
-            reverse('posts:post_create', ): 'posts/create_post.html',
-        }
-        for reverse_name, template in templates_pages_names.items():
-            with self.subTest(reverse_name=reverse_name):
-                response = self.authorized_client.get(reverse_name)
+
+        def url(url, **kwargs):
+            return reverse(url, kwargs=kwargs)
+
+        urls = [
+            url('posts:index'),
+            url('posts:group_list', slug=self.group.slug),
+            url('posts:profile', username=self.user.username),
+            url('posts:post_detail', post_id=self.post.id),
+            url('posts:post_edit', post_id=self.post.id),
+            url('posts:post_create'),
+        ]
+
+        templates = [
+            'posts/index.html',
+            'posts/group_list.html',
+            'posts/profile.html',
+            'posts/post_detail.html',
+            'posts/create_post.html',
+            'posts/create_post.html',
+        ]
+
+        for url, template in zip(urls, templates):
+            with self.subTest(url=url):
+                response = self.authorized_client.get(url)
                 self.assertTemplateUsed(response, template)
 
     def test_index_show_correct_context(self):
-        """Проверка соответствия ожидаемого словаря context,
-        передаваемого в шаблон при вызове(с пажинатором)."""
+        """Словарь context, переданный в шаблон при вызове(с пажинатором)
+        соответствует ожидаемому."""
         context = {reverse('posts:index'): self.post,
                    reverse('posts:group_list',
                            kwargs={'slug': self.group.slug,
@@ -144,7 +150,7 @@ class PostPagesTests(TestCase):
         """Пост сохраняется в группе."""
         posts_count = Post.objects.filter(group=self.group).count()
         Post.objects.create(
-            text='Текст нового поста для теста сохранения в группе',
+            text='Текст для нового поста',
             author=self.user,
             group=self.group,
         )
@@ -155,7 +161,7 @@ class PostPagesTests(TestCase):
         """Пост не сохраняется в группе, не предназначенной для него."""
         posts_count = Post.objects.filter(group=self.group_fake).count()
         Post.objects.create(
-            text='Тестовый текст для нового поста',
+            text='Текст для нового поста',
             author=self.user,
             group=self.group,
         )
@@ -174,7 +180,7 @@ class PostPagesTests(TestCase):
             response = self.authorized_client.get(reverse_obj)
             post_count = len(response.context.get('page_obj').object_list)
             Post.objects.create(
-                text='Тестовый текст для нового поста',
+                text='Текст для нового поста',
                 author=self.user,
                 group=self.group,
             )
@@ -182,4 +188,4 @@ class PostPagesTests(TestCase):
             post_count1 = len(response.context.get('page_obj').object_list)
             self.assertEqual(post_count + 1, post_count1)
             Post.objects.filter(
-                text='Тестовый текст для нового поста').delete()
+                text='Текст для нового поста').delete()

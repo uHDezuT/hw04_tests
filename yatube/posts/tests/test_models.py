@@ -12,27 +12,34 @@ class PostModelTest(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='Тестовый слаг',
-            description='Тестовое описание',
+            title='Новая группа',
+            slug='slug',
+            description='Описание группы',
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Новый пост',
+        )
+        cls.long_post = Post.objects.create(
+            author=cls.user,
+            text="Не более 15 символов может уместиться в превью"
         )
 
-    def test_models_have_correct_object_names(self):
-        """Проверяем, что у моделей корректно работает __str__."""
+    def test_model_post_have_correct_object_names(self):
+        """У модели Post корректно работает __str__."""
+        post = PostModelTest.post
+        long_post = PostModelTest.long_post
+        self.assertEqual(str(long_post), "Не более 15 сим")
+        self.assertEqual(str(post), "Новый пост")
+
+    def test_model_group_have_correct_object_names(self):
+        """У модели Group корректно работает __str__."""
         post_group = PostModelTest.group
         expected_object_name_group = post_group.title
         self.assertEqual(expected_object_name_group, str(post_group))
 
-        post = PostModelTest.post
-        expected_object_name_post = post.text[:15]
-        self.assertEqual(expected_object_name_post, str(post))
-
     def test_Posts_verbose_name(self):
-        """Проверяем verbose_name на совпадение с ожидаемыми."""
+        """verbose_name совпадает с ожидаемым."""
         post = PostModelTest.post
         field_verboses = {
             'text': 'Текст поста',
@@ -46,7 +53,7 @@ class PostModelTest(TestCase):
                                  value)
 
     def test_Posts_help_text(self):
-        """Проверяем help_text на совпадение с ожидаемыми."""
+        """help_text совпадает с ожидаемым."""
         post = PostModelTest.post
         field_help_text = {
             'text': 'Введите текст поста',
