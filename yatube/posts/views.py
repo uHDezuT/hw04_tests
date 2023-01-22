@@ -72,7 +72,8 @@ def post_create(request):
 
     title = "Добавить запись"
     button_caption = "Добавить"
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None)
     if request.method == "POST" and form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -95,7 +96,9 @@ def post_edit(request, post_id):
                         post_id=post_id)
     title = "Редактировать запись"
     button_caption = "Сохранить"
-    form = PostForm(request.POST or None, instance=post)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None,
+                    instance=post)
     if request.method == "POST" and form.is_valid():
         form.text = form.cleaned_data['text']
         form.group = form.cleaned_data['group']
