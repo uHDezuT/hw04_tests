@@ -144,10 +144,6 @@ class PostFormTests(TestCase):
                                      kwargs={'username': self.post.author}))
 
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        print(Post.objects.filter(group=PostFormTests.group.id,
-                                  text='Новый пост2',
-                                  image=Post.objects.get(
-                                      text='Новый пост2').image))
         self.assertTrue(
             Post.objects.filter(
                 group=PostFormTests.group.id,
