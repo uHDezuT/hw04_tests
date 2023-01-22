@@ -98,7 +98,6 @@ class PostFormTests(TestCase):
             reverse('posts:profile', kwargs={'username': self.user.username})
         )
         self.assertTrue(response.context['page_obj'][0].image)
-        print(response.context['page_obj'][0].image)
 
     def test_index_check_context_image(self):
         """Изображение передаётся в словаре context на главную страницу"""
