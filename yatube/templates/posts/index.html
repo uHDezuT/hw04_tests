@@ -22,6 +22,10 @@
         <a href="{% url 'posts:post_edit' post.id %}">
           редактировать запись</a>
       </li>
+      <li>
+        <a href="{% url 'posts:post_detail' post.id %}">
+          подробнее</a>
+      </li>
     </ul>
     {% if not forloop.last %}
     <hr>
